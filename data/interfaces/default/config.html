@@ -317,60 +317,14 @@
                     <div>
                     <label>Match Ratio</label><input type="text" name="match_ratio"  value="${config['match_ratio']}" size="8" maxlength="40"> percent
                     </div>
-                </td>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <td>
+                    <br>
+                    <h3>Scan Options</h3>
+                    <br>
                     <div>
-                    <label>Base Destination Folder:</label><input type="text" name="destination_dir" value="${config['destination_dir']}" size="50">
-                    </div>
-                    <BR>
-                    <div>
-                    <input type="checkbox" name="destination_copy" value=1 ${config['destination_copy']} /><label>Keep original files</label>
-                    </div>
-                </td>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>eBook Destination Folder:</label><input type="text" name="ebook_dest_folder" value="${config['ebook_dest_folder']}" size="30" maxlength="40">
-                    <label>eBook Destination File:</label><input type="text" name="ebook_dest_file" value="${config['ebook_dest_file']}" size="30" maxlength="40">
-                    <BR>
-                    <small>Options include $Author, $Title, any string
-                    <BR>
-                    Current limitation: each file has to be in unique subfolder
-                    </small>
-                </td>
-                <td>
-                    <label>Magazine Destination Folder:</label><input type="text" name="mag_dest_folder" value="${config['mag_dest_folder']}" size="30" maxlength="40">
-                    <label>Magazine Destination File:</label><input type="text" name="mag_dest_file" value="${config['mag_dest_file']}" size="30" maxlength="40">
-                    <BR>
-                    <small>Options include $Title, $IssueDate, any string
-                    <BR>
-                    Current limitation: each file has to be in unique subfolder
-                    </small>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div>
-                    <label>Calibre Auto Add:</label><input type="text" name="imp_autoadd" value="${config['imp_autoadd']}" size="50" maxlength="90">
-                    </div>
-                    <small>Directory for a copy to be placed for auto add process</small>
-                </td>
-                <td>
-                </td>
-            </tr>
-	    <tr>
-                <td>
-                                  <div>
-                  <label>Full Scan:</label><input type="checkbox" name="full_scan" id="fullscan" value=1 ${config['full_scan']} />
+                  <input type="checkbox" name="full_scan" id="fullscan" value=1 ${config['full_scan']} /><label>Full Scan</label>
                   <br>
                   <i class="smalltext">This will remove entries if ebooks are not found in the download location</i>
- 
+
                   </div>
                   <div id="fullscanoptions">
                   <label>Missing Book Status:</label>
@@ -388,13 +342,48 @@
                   <i class="smalltext">Value to update ebooks to if not found</i>
                   </div>
                   <div>
-                  <label>Add Authors:</label><input type="checkbox" name="add_author" value=1 ${config['add_author']} />
+                  <input type="checkbox" name="add_author" value=1 ${config['add_author']} /><label>Add Authors</label>
                   <br>
                   <i class="smalltext">This will auto add new authors from GoodReads</i>
                   </div>
-
-		</td>
+                  <div>
+                  <input type="checkbox" name="add_series" value=1 ${config['add_series']} /><label>Add Series</label>
+                  <br>
+                  <i class="smalltext">Automatically add series when adding authors and books</i>
+                  </div>
+                </td>
                 <td>
+                    <h3>Locations</h3>
+                    <br>
+                     <div>
+                    <label>Base Destination Folder:</label><input type="text" name="destination_dir" value="${config['destination_dir']}" size="40">
+                    </div>
+                    <BR>
+                    <div>
+                    <input type="checkbox" name="destination_copy" value=1 ${config['destination_copy']} /><label>Keep original files</label>
+                    </div>
+                                        <div>
+                    <label>Calibre Auto Add:</label><input type="text" name="imp_autoadd" value="${config['imp_autoadd']}" size="40" maxlength="90">
+                    </div>
+                    <small>Directory for a copy to be placed for auto add process</small>
+                    <br>
+                    <h3>Name Format</h3>
+                    <br>
+                     <label>eBook Destination Folder:</label><input type="text" name="ebook_dest_folder" value="${config['ebook_dest_folder']}" size="30" maxlength="40">
+                    <label>eBook Destination File:</label><input type="text" name="ebook_dest_file" value="${config['ebook_dest_file']}" size="30" maxlength="40">
+                    <BR>
+                    <small>Options include $Author, $Title, any string
+                    <BR>
+                    Current limitation: each file has to be in unique subfolder
+                    </small>
+                    <label>Magazine Destination Folder:</label><input type="text" name="mag_dest_folder" value="${config['mag_dest_folder']}" size="30" maxlength="40">
+                    <label>Magazine Destination File:</label><input type="text" name="mag_dest_file" value="${config['mag_dest_file']}" size="30" maxlength="40">
+                    <BR>
+                    <small>Options include $Title, $IssueDate, any string
+                    <BR>
+                    Current limitation: each file has to be in unique subfolder
+                    </small>
+
                 </td>
             </tr>
         </table>

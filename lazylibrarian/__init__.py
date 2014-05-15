@@ -129,6 +129,7 @@ SCAN_INTERVAL = 10 #Every 10 minutes
 FULL_SCAN = 0 #full scan would remove books from db
 NOTFOUND_STATUS = 'Skipped' #value to marke missing books in db, can be 'Open', 'Ignored',' 'Wanted','Skipped'
 ADD_AUTHOR = 1 #auto add authors not found in db from goodreads
+ADD_SERIES =1 #auto add series when adding authors and books
 
 EBOOK_DEST_FOLDER = None
 EBOOK_DEST_FILE = None
@@ -246,7 +247,7 @@ def initialize():
             VERSIONCHECK_INTERVAL, SEARCH_INTERVAL, SCAN_INTERVAL, EBOOK_DEST_FOLDER, EBOOK_DEST_FILE, MAG_DEST_FOLDER, MAG_DEST_FILE, USE_TWITTER, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, \
             USE_BOXCAR, BOXCAR_NOTIFY_ONSNATCH, BOXCAR_NOTIFY_ONDOWNLOAD, BOXCAR_TOKEN, TORRENT_DIR, TOR_DOWNLOADER_BLACKHOLE, TOR_DOWNLOADER_UTORRENT, USE_TOR, USE_NZB, NZB_DOWNLOADER_SABNZBD, NZB_DOWNLOADER_BLACKHOLE, \
             USE_PUSHBULLET, PUSHBULLET_NOTIFY_ONSNATCH, PUSHBULLET_NOTIFY_ONDOWNLOAD, PUSHBULLET_TOKEN, PUSHBULLET_DEVICEID, UTORRENT_HOST, UTORRENT_USER, UTORRENT_PASS, UTORRENT_LABEL, \
-	    NOTFOUND_STATUS, FULL_SCAN, ADD_AUTHOR, NMA_ENABLED, NMA_APIKEY, NMA_PRIORITY, NMA_ONSNATCH, \
+	    NOTFOUND_STATUS, FULL_SCAN, ADD_AUTHOR, ADD_SERIES, NMA_ENABLED, NMA_APIKEY, NMA_PRIORITY, NMA_ONSNATCH, \
             GIT_USER, GIT_REPO, GIT_BRANCH, INSTALL_TYPE, CURRENT_VERSION, LATEST_VERSION, COMMITS_BEHIND, NUMBEROFSEEDERS
 
         if __INITIALIZED__:
@@ -379,6 +380,7 @@ def initialize():
         FULL_SCAN = bool(check_setting_int(CFG, 'LibraryScan', 'full_scan', 0))
 	NOTFOUND_STATUS = check_setting_str(CFG, 'LibraryScan', 'notfound_status','Skipped')
 	ADD_AUTHOR = bool(check_setting_int(CFG, 'LibraryScan', 'add_author', 0))
+        ADD_SERIES = bool(check_setting_int(CFG, 'General', 'add_series',0))
 
         EBOOK_DEST_FOLDER = check_setting_str(CFG, 'PostProcess', 'ebook_dest_folder', '$Author/$Title')
         EBOOK_DEST_FILE = check_setting_str(CFG, 'PostProcess', 'ebook_dest_file', '$Title - $Author')
@@ -502,6 +504,8 @@ def config_write():
     new_config['General']['imp_autoadd'] =  IMP_AUTOADD
 
     new_config['General']['ebook_type'] = EBOOK_TYPE
+
+    new_config['General']['add_series'] = ADD_SERIES
 
     new_config['Git'] = {}
     new_config['Git']['git_user'] = GIT_USER
