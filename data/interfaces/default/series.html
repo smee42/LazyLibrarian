@@ -1,0 +1,104 @@
+<%inherit file="base.html"/>
+<%!
+    from lazylibrarian import formatter
+%>
+
+<%def name="headerIncludes()">
+    <div id="subhead_container">
+        <ul id="subhead_menu">
+            <li><a href="forceSeriesUpdate" id="button"> Refresh Active Series </a></li>
+        </ul>
+    </div>
+</%def>
+
+<%def name="body()">
+<BR><BR>
+    <table class="display" id="series_table">
+        <thead>
+            <tr>
+                <th id="seriesname">Series</th>
+                <th id="authorname">Author</th>
+                <th id="bookname">Latest Book</th>
+                <th id="date">Released</th>
+                <th id="have">Downloaded</th>
+                <th id="status">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        %for item in series:
+            <%
+        		totalbooks = item['UnignoredBooks']
+        		havebooks = item['HaveBooks']
+        		if not havebooks:
+        			havebooks = 0
+        		try:
+        			percent = (havebooks*100.0)/totalbooks
+        			if percent > 100:
+        				percent = 100
+        			if percent <= 100:
+        				css = "<div class=\"progress-container success\">"
+        			if percent <= 75:
+        				css = "<div class=\"progress-container info\">"
+        			if percent <= 50:
+        				css = "<div class=\"progress-container warning\">"
+        			if percent <= 25:
+        				css = "<div class=\"progress-container danger\">"
+        		except (ZeroDivisionError, TypeError):
+        			percent = 0
+        			totalbooks = '?'
+        			css = "<div class=\"progress-container danger\">"
+
+        		if item['Status'] == 'Paused':
+        			grade = 'X'
+
+            %>
+            <tr class="gradeZ">
+                <td id="name"><span title="${item['SeriesName']}"></span><a href="seriesDetail?SeriesID=${item['SeriesID']}">${item['SeriesName']}</a></td>
+                <td id="name"><span title="${item['AuthorName']}"></span><a href="authorPage?AuthorName=${item['AuthorName']}">${item['AuthorName']}</a></td>
+                <td id="bookname"><span title="${item['LastBook']}"></span><a href="${item['LastLink']}">${item['LastBook']}</a></td>
+                <td id="date">${item['LastDate']}</td>
+                <td id="have"><span title="${percent}"></span>${css}
+				<div style="width:${percent}%"><span class="progressbar-front-text">${havebooks}/${totalbooks}</span></div></td>
+				
+                <td id="status">${item['Status']}</td>
+            </tr>
+        %endfor
+        </tbody>
+    </table>
+</%def>
+
+<%def name="headIncludes()">
+    <link rel="stylesheet" href="css/data_table.css">
+</%def>
+
+<%def name="javascriptIncludes()">
+    <script src="js/libs/jquery.dataTables.min.js"></script>
+    <script>
+    $(document).ready(function()
+    {
+        $('#author_table').dataTable(
+            {
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "oLanguage": {
+                    "sLengthMenu":"Show _MENU_ series per page",
+                    "sEmptyTable": "No series found",
+                    "sInfo":"Showing _START_ to _END_ of _TOTAL_ series",
+                    "sInfoEmpty":"Showing 0 to 0 of 0 authors",
+                    "sInfoFiltered":"(filtered from _MAX_ total series)"},
+                "bStateSave": true,
+                "aLengthMenu": [[5, 10, 15, 25, 50, 100, -1], [5, 10, 15, 25, 50, 100, "All"]],
+                "iDisplayLength": 10,
+                "sPaginationType": "full_numbers",
+                "aaSorting": [[0, 'asc']],
+            });
+			$('.dataTables_filter input').attr("placeholder", "Search table here");
+    });
+    </script>
+</%def>

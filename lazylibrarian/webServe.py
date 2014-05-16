@@ -592,6 +592,37 @@ class WebInterface(object):
             raise cherrypy.HTTPRedirect("manage")
     markBooks.exposed = True
 
+    def series(self):
+        myDB = database.DBConnection()
+        serieslist = myDB.select('SELECT * from series order by SeriesName COLLATE NOCASE')
+        return serve_template(templatename="series.html", title="Series", series=serieslist)
+    series.exposed = True
+
+    def seriesDetail(self, SeriesID, BookLang=None, Ignored=False):
+        myDB = database.DBConnection()
+        logger.debug(u"Series ID : " + str(SeriesID))
+        if Ignored:
+            languages = myDB.select("SELECT DISTINCT BookLang from books WHERE series = ? AND Status ='Ignored'", [SeriesID])
+            if BookLang:
+                querybooks = "SELECT * from books WHERE series = '%s' AND BookLang = '%s' AND Status ='Ignored' order by BookDate DESC, BookRate DESC" % SeriesID, BookLang
+            else:
+                querybooks = "SELECT * from books WHERE series = '%s' and Status ='Ignored' order by BookDate DESC, BookRate DESC" % SeriesID
+        else:
+            languages = myDB.select("SELECT DISTINCT BookLang from books WHERE series = ? AND Status !='Ignored'", [SeriesID])
+            if BookLang:
+                querybooks = "SELECT * from books WHERE series = '%s' AND BookLang = '%s' AND Status !='Ignored' order by BookDate DESC, BookRate DESC" % SeriesID, BookLang
+            else:
+                querybooks = "SELECT * from books WHERE series = '%s' and Status !='Ignored' order by BookDate DESC, BookRate DESC" % SeriesID
+
+        queryseries = "SELECT * from series WHERE seriesID = '%s'" % SeriesID
+
+        series = myDB.action(queryseries).fetchone()
+        books = myDB.select(querybooks)
+        if series is None:
+            raise cherrypy.HTTPRedirect("home")
+        return serve_template(templatename="seriesdetail.html", title=series['SeriesName'], series=series, books=books, languages=languages)
+    seriesDetail.exposed = True
+
     #ALL ELSE
     def forceProcess(self, source=None):
         threading.Thread(target=postprocess.processDir).start()
