@@ -64,7 +64,7 @@ class WebInterface(object):
     def config(self):
         http_look_dir = os.path.join(lazylibrarian.PROG_DIR, 'data/interfaces/')
         http_look_list = [ name for name in os.listdir(http_look_dir) if os.path.isdir(os.path.join(http_look_dir, name)) ]
-	status_list = [ 'Skipped','Wanted', 'Open', 'Ignored' ]
+        status_list = [ 'Skipped','Wanted', 'Open', 'Ignored' ]
         config = {
                     "http_host":        lazylibrarian.HTTP_HOST,
 		    "http_root":	lazylibrarian.HTTP_ROOT,
@@ -159,17 +159,17 @@ class WebInterface(object):
         newznab=0, newznab_host=None, newznab_api=None, newznab2=0, newznab_host2=None, newznab_api2=None,newzbin=0, newzbin_uid=None, newzbin_pass=None, kat=0, ebook_type=None, book_api=None, gr_api=None, gb_api=None, usenetcrawler = 0, usenetcrawler_host=None, usenetcrawler_api = None, 
         versioncheck_interval=None, search_interval=None, scan_interval=None, ebook_dest_folder=None, ebook_dest_file=None, mag_dest_folder=None, mag_dest_file=None, use_twitter=0, twitter_notify_onsnatch=0, twitter_notify_ondownload=0, utorrent_host=None, utorrent_user=None, utorrent_pass=None,  notfound_status='Wanted', full_scan=0, add_author=1, add_series=1,
         utorrent_label=None, use_boxcar=0, boxcar_notify_onsnatch=0, boxcar_notify_ondownload=0, boxcar_token=None, use_pushbullet=0, pushbullet_notify_onsnatch=0, pushbullet_notify_ondownload=0, pushbullet_token=None, pushbullet_deviceid=None,
-	nma_enabled=False, nma_apikey=None, nma_priority=0, nma_onsnatch=0):
+	    nma_enabled=False, nma_apikey=None, nma_priority=0, nma_onsnatch=0):
 
         lazylibrarian.HTTP_HOST = http_host
-	lazylibrarian.HTTP_ROOT = http_root
+        lazylibrarian.HTTP_ROOT = http_root
         lazylibrarian.HTTP_PORT = http_port
         lazylibrarian.HTTP_USER = http_user
         lazylibrarian.HTTP_PASS = http_pass
         lazylibrarian.HTTP_LOOK = http_look
         lazylibrarian.LAUNCH_BROWSER = launch_browser
-	lazylibrarian.PROXY_HOST = proxy_host
-	lazylibrarian.PROXY_TYPE = proxy_type
+        lazylibrarian.PROXY_HOST = proxy_host
+        lazylibrarian.PROXY_TYPE = proxy_type
         lazylibrarian.LOGDIR = logdir
         lazylibrarian.MATCH_RATIO = match_ratio
 
@@ -216,7 +216,6 @@ class WebInterface(object):
 
         lazylibrarian.KAT = kat
 
-
         lazylibrarian.USE_NZB = use_nzb
         lazylibrarian.USE_TOR = use_tor
 
@@ -233,9 +232,9 @@ class WebInterface(object):
         lazylibrarian.SCAN_INTERVAL = scan_interval
         lazylibrarian.VERSIONCHECK_INTERVAL = versioncheck_interval
 
-	lazylibrarian.FULL_SCAN = full_scan
-	lazylibrarian.NOTFOUND_STATUS = notfound_status
-	lazylibrarian.ADD_AUTHOR = add_author
+        lazylibrarian.FULL_SCAN = full_scan
+        lazylibrarian.NOTFOUND_STATUS = notfound_status
+        lazylibrarian.ADD_AUTHOR = add_author
         lazylibrarian.ADD_SERIES = add_series
 
         lazylibrarian.EBOOK_DEST_FOLDER = ebook_dest_folder
@@ -261,10 +260,10 @@ class WebInterface(object):
         lazylibrarian.PUSHBULLET_TOKEN = pushbullet_token
         lazylibrarian.PUSHBULLET_DEVICEID = pushbullet_deviceid
 
-	lazylibrarian.NMA_ENABLED = nma_enabled
-	lazylibrarian.NMA_APIKEY = nma_apikey
-	lazylibrarian.NMA_PRIORITY = nma_priority
-	lazylibrarian.NMA_ONSNATCH = nma_onsnatch
+        lazylibrarian.NMA_ENABLED = nma_enabled
+        lazylibrarian.NMA_APIKEY = nma_apikey
+        lazylibrarian.NMA_PRIORITY = nma_priority
+        lazylibrarian.NMA_ONSNATCH = nma_onsnatch
 
         lazylibrarian.config_write()
 
@@ -278,7 +277,6 @@ class WebInterface(object):
         lazylibrarian.SIGNAL = 'update'
         message = 'Updating...'
         return serve_template(templatename="shutdown.html", title="Updating", message=message, timer=120)
-        return page
     update.exposed = True
 
 #SEARCH
@@ -385,10 +383,10 @@ class WebInterface(object):
 
     def libraryScan(self):
         try:
-		threading.Thread(target=librarysync.LibraryScan(lazylibrarian.DESTINATION_DIR)).start()
+             threading.Thread(target=librarysync.LibraryScan(lazylibrarian.DESTINATION_DIR)).start()
         except Exception, e:
              logger.error('Unable to complete the scan: %s' % e)
-	raise cherrypy.HTTPRedirect("home")
+        raise cherrypy.HTTPRedirect("home")
     libraryScan.exposed = True
 
     def addResults(self, authorname):
@@ -706,7 +704,7 @@ class WebInterface(object):
                     threading.Thread(target=search_nzb_book, args=[books, mags]).start()
                 if (lazylibrarian.USE_TOR):
                     threading.Thread(target=search_tor_book, args=[books, mags]).start()
-                logger.debug("Searching for magazine with title: " + str(title));
+                logger.debug("Searching for magazine with title: " + str(title))
                 raise cherrypy.HTTPRedirect("magazines")
     addKeyword.exposed = True
 
@@ -753,7 +751,7 @@ class WebInterface(object):
                 threading.Thread(target=search_nzb_book, args=[books, mags]).start()
             if (lazylibrarian.USE_TOR):
                 threading.Thread(target=search_tor_book, args=[books, mags]).start()
-            logger.debug("Searching for magazine with title: " + str(bookid));
+            logger.debug("Searching for magazine with title: " + str(bookid))
             raise cherrypy.HTTPRedirect("magazines")
     searchForMag.exposed = True
 
@@ -827,7 +825,6 @@ class WebInterface(object):
         lazylibrarian.SIGNAL = 'shutdown'
         message = 'closing ...'
         return serve_template(templatename="shutdown.html", title="Close library", message=message, timer=15)
-        return page
     shutdown.exposed = True
 
     def restart(self):
