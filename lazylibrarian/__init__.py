@@ -696,6 +696,12 @@ def dbcheck():
         logger.info('Updating database to hold SeriesOrder')
         c.execute('ALTER TABLE books ADD COLUMN SeriesOrder INTEGER')
 
+    try:
+        c.execute('SELECT SeriesName from books')
+    except sqlite3.OperationalError:
+        logger.info('Updating database to hold SeriesName')
+        c.execute('ALTER TABLE books ADD COLUMN SeriesName TEXT')
+
     conn.commit()
     c.close()
 

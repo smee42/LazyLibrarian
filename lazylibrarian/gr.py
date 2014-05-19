@@ -250,6 +250,7 @@ class GoodReads:
             book_ignore_count = 0
             total_count = 0
             logger.debug(u"url " + URL)
+            seriesList = []
 
             authorNameResult = rootxml.find('./author/name').text
             logger.debug(u"author name " + authorNameResult)
@@ -283,7 +284,6 @@ class GoodReads:
                             BOOK_URL = 'http://www.goodreads.com/book/isbn?isbn=' + book.find('isbn13').text + '&' + urllib.urlencode(self.params)
 
                             logger.debug(u"Book URL: " + str(BOOK_URL))
-
 
                             try:
                                 # Cache our request
@@ -321,9 +321,16 @@ class GoodReads:
                             SERIES_sourcexml = ElementTree.parse(resp)
                             SERIES_rootxml = SERIES_sourcexml.getroot()
 
-                            seriesId = SERIES_rootxml.find('./series_works/series_work/series/id').text
-                            seriesNumber = SERIES_rootxml.find('./series_works/series_work/user_position').text
-                            seriesName = SERIES_rootxml.find('./series_works/series_work/series/title').text
+                            try:
+                                seriesId = SERIES_rootxml.find('./series_works/series_work/series/id').text
+                                seriesNumber = SERIES_rootxml.find('./series_works/series_work/user_position').text
+                                seriesName = SERIES_rootxml.find('./series_works/series_work/series/title').text
+                                seriesList.append({seriesId})
+                            except Exception, e:
+                                seriesId = None
+                                seriesNumber = None
+                                seriesName = ""
+
                             logger.debug(u"series id: " + str(seriesId))
                             logger.debug(u"series order: " + str(seriesNumber))
 
@@ -380,7 +387,8 @@ class GoodReads:
                                 "Status":       book_status,
                                 "BookAdded":    formatter.today(),
                                 "Series":       seriesId,
-                                "SeriesOrder":  seriesNumber
+                                "SeriesOrder":  seriesNumber,
+                                "SeriesName":   seriesName
                             }
 
                             resultsCount = resultsCount + 1
@@ -454,6 +462,34 @@ class GoodReads:
                 "LastDate": lastbookdate
                 }
         myDB.upsert("authors", newValueDict, controlValueDict)
+
+        for seriesItem in seriesList:
+            (thisSeriesID,) = seriesItem
+            logger.debug("Getting lastbook for series " + thisSeriesID)
+            lastbook = myDB.action("SELECT BookName, BookLink, BookDate FROM books WHERE Series=%s AND Status != 'Ignored' ORDER BY BookDate DESC" % thisSeriesID).fetchone()
+            if lastbook:
+                lastbookname = lastbook['BookName']
+                lastbooklink = lastbook['BookLink']
+                lastbookdate = lastbook['BookDate']
+            else:
+                lastbookname = None
+                lastbooklink = None
+                lastbookdate = None
+
+            unignoredbooks = myDB.select("SELECT COUNT(BookName) as unignored FROM books WHERE Series='%s' AND Status != 'Ignored'" % thisSeriesID)
+            bookCount = myDB.select("SELECT COUNT(BookName) as counter FROM books WHERE Series='%s'" % thisSeriesID)
+
+            controlValueDict = {"SeriesID": thisSeriesID}
+            newValueDict = {
+                    "Status": "Active",
+                    "TotalBooks": bookCount[0]['counter'],
+                    "UnignoredBooks": unignoredbooks[0]['unignored'],
+                    "LastBook": lastbookname,
+                    "LastLink": lastbooklink,
+                    "LastDate": lastbookdate
+                    }
+            myDB.upsert("series", newValueDict, controlValueDict)
+
 
         #This is here because GoodReads sometimes has several entries with the same BookID!
         modified_count = added_count + updated_count
